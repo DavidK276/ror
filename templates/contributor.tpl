@@ -94,8 +94,7 @@
                         items.forEach((item) => {
                             let labels = { /* */};
                             for (let i = 0; i < item.organization.labels.length; i++) {
-                                labels[item.organization.labels[i].iso639]
-                                    = item.organization.labels[i].label
+                                labels[item.organization.labels[i].iso639] = item.organization.labels[i].label;
                             }
                             let row = {
                                 id: item.organization.id,

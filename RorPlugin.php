@@ -5,6 +5,7 @@
  * @copyright (c) 2021+ TIB Hannover
  * @copyright (c) 2021+ Dulip Withanage
  * @copyright (c) 2021+ Gazi Yücel
+ * @copyright (c) 2025+ David Krchňavý
  * @license Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class RorPlugin
@@ -13,10 +14,12 @@
 
 namespace APP\plugins\generic\ror;
 
+use APP\core\Application;
 use APP\plugins\generic\ror\classes\ArticleView;
 use APP\plugins\generic\ror\classes\Form;
 use APP\plugins\generic\ror\classes\Schema;
 use APP\plugins\generic\ror\classes\Workflow;
+use APP\template\TemplateManager;
 use PKP\plugins\GenericPlugin;
 use PKP\plugins\Hook;
 
@@ -24,28 +27,27 @@ define('ROR_PLUGIN_NAME', basename(__FILE__, '.php'));
 
 class RorPlugin extends GenericPlugin
 {
-    /** @copydoc Plugin::register */
+    /** @copydoc Plugin::register
+     * @throws \Exception
+     */
     public function register($category, $path, $mainContextId = null): bool
     {
-        if (parent::register($category, $path, $mainContextId)) {
-
-            if ($this->getEnabled()) {
-                /* ROR */
-                $schema = new Schema();
-                $form = new Form();
-                $workflow = new Workflow($this);
-                $articleView = new ArticleView($this);
-                Hook::add('Schema::get::author', [$schema, 'addToAuthor']);
-                Hook::add('Form::config::before', [$form, 'addFields']);
-                Hook::add('Template::Workflow::Publication', [$workflow, 'execute']);
-                Hook::add('Template::SubmissionWizard::Section', [$workflow, 'execute']);
-                Hook::add('ArticleHandler::view', [$articleView, 'execute']);
-            }
-
-            return true;
+        $success = parent::register($category, $path, $mainContextId);
+        if (!$success || !$this->getEnabled($mainContextId)) {
+            return $success;
         }
-
-        return false;
+        /* ROR */
+        $schema = new Schema();
+        $form = new Form();
+        $workflow = new Workflow($this);
+        $articleView = new ArticleView($this);
+        Hook::add('Schema::get::author', [$schema, 'addToAuthor']);
+        Hook::add('Form::config::before', [$form, 'addFields']);
+        Hook::add('Template::Workflow::Publication', [$workflow, 'execute']);
+        Hook::add('Template::SubmissionWizard::Section', [$workflow, 'execute']);
+        Hook::add('ArticleHandler::view', [$articleView, 'execute']);
+        Hook::add('TemplateResource::getFilename', [$this, '_overridePluginTemplates']);
+        return $success;
     }
 
     /** @copydoc Plugin::getDisplayName() */

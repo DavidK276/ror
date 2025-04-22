@@ -28,3 +28,6 @@ msgstr "Search for Affiliation and ROR iD on ror.org"
 
 msgid "plugins.generic.ror.input.lookup.tooltip"
 msgstr "Please fill in the name of the organisation. Clicking on the organisation will overwrite the fields \"Affiliation\" and \"ROR iD\"."
+
+msgid "plugins.generic.ror.lookup.title"
+msgstr "Please fill in the name of the organisation. Clicking on the organisation will overwrite the \"Affiliation\" field."
