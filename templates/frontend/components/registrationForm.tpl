@@ -18,21 +18,20 @@
 <script type="text/javascript">
 	function selectAffiliation(event) {
 		const affiliationInput = document.getElementById('affiliation');
+		document.getElementById('organizations-container').style.display = 'none';
+
 		if (event.target.value === 'other') {
 			for (let item of document.getElementsByClassName('affiliation-ror')) {
 				item.style.display = 'initial';
 			}
 			affiliationInput.value = '';
 			document.getElementById('organizations').innerHTML = '';
-			document.getElementById('organizations-container').style.display = 'none';
-
 			return;
-		} else {
-			for (let item of document.getElementsByClassName('affiliation-ror')) {
-				item.style.display = 'none';
-			}
 		}
 
+		for (let item of document.getElementsByClassName('affiliation-ror')) {
+			item.style.display = 'none';
+		}
 		affiliationInput.value = event.target.value;
 	}
 
