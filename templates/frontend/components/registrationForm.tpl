@@ -140,8 +140,7 @@
 					</span>
 				</span>
 				<input type="text" name="affiliation" autocomplete="organization" id="affiliation"
-				       value="{$affiliation|default:""|escape}" required aria-required="true" readonly
-				       aria-readonly="true" disabled aria-disabled="true">
+				       value="{$affiliation|default:""|escape}" required aria-required="true">
 			</label>
 		</div>
 		<div class="country">
