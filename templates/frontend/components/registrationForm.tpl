@@ -16,64 +16,64 @@
  * @uses $username string Username input entry if available
  *}
 <script type="text/javascript">
-	function selectAffiliation(event) {
-		const affiliationInput = document.getElementById('affiliation');
-		document.getElementById('organizations-container').style.display = 'none';
+    var blockLookup = false;
 
-		if (event.target.value === 'other') {
-			for (let item of document.getElementsByClassName('affiliation-ror')) {
-				item.style.display = 'initial';
-			}
-			affiliationInput.value = '';
-			document.getElementById('organizations').innerHTML = '';
-			return;
-		}
+    function selectAffiliation(event) {
+        const affiliationInput = document.getElementById('affiliation');
+        document.getElementById('organizations-container').style.display = 'none';
 
-		for (let item of document.getElementsByClassName('affiliation-ror')) {
-			item.style.display = 'none';
-		}
-		affiliationInput.value = event.target.value;
-	}
+        if (event.target.value === 'other') {
+            for (let item of document.getElementsByClassName('affiliation-ror')) {
+                item.style.display = 'initial';
+            }
+            affiliationInput.value = '';
+            document.getElementById('organizations').innerHTML = '';
+            return;
+        }
 
-	function lookupOrganizations(event) {
-		const organizationList = document.getElementById('organizations');
-		const searchPhrase = event.target.value;
-		if (searchPhrase.length <= 3) {
-			return;
-		}
-		organizationList.innerHTML = '';
+        for (let item of document.getElementsByClassName('affiliation-ror')) {
+            item.style.display = 'none';
+        }
+        affiliationInput.value = event.target.value;
+    }
 
-		fetch('https://api.ror.org/organizations?affiliation=' + searchPhrase + '*')
-				.then(response => response.json())
-				.then(data => {
-					let organizations = new Map();
-					let items = data.items;
-					items.forEach((item) => {
-						let row = {
-							id: item.organization.id,
-							name: item.organization.name
-						};
-						if (organizations.has(row.id)) {
-							return;
-						}
-						organizations.set(row.id, row.name);
-              {literal}
-						organizationList.innerHTML += `<li style="max-width: 100%"><a onclick="selectOrganization('${row.name}')">${row.name} [${row.id}]</a></li>`;
-              {/literal}
-					});
+    function lookupOrganizations(event) {
+        const organizationList = document.getElementById('organizations');
+        const searchPhrase = event.target.value;
+        if (searchPhrase.length <= 3) {
+            return;
+        }
+        organizationList.innerHTML = '';
 
-					if (!organizationList.innerHTML) {
-						document.getElementById('organizations-container').style.display = 'none';
-					} else {
-						document.getElementById('organizations-container').style.display = 'flex';
-					}
-				})
-				.catch(error => console.log(error));
-	}
+        fetch('https://api.ror.org/organizations?affiliation=' + searchPhrase + '*')
+            .then(response => response.json())
+            .then(data => {
+                let items = data.items;
+                items.forEach((item) => {
+                    let row = {
+                        id: item.organization.id,
+                        name: item.organization.name
+                    };
 
-	function selectOrganization(name) {
-		document.getElementById('affiliation').value = name;
-	}
+                    if (!organizationList.innerHTML.includes(row.id)) {
+                        {literal}
+                        organizationList.innerHTML += `<li style="max-width: 100%"><a onclick="selectOrganization('${row.name}')">${row.name} [${row.id}]</a></li>`;
+                        {/literal}
+                    }
+                });
+
+                if (!organizationList.innerHTML) {
+                    document.getElementById('organizations-container').style.display = 'none';
+                } else {
+                    document.getElementById('organizations-container').style.display = 'flex';
+                }
+            })
+            .catch(error => console.log(error));
+    }
+
+    function selectOrganization(name) {
+        document.getElementById('affiliation').value = name;
+    }
 </script>
 <fieldset class="identity">
 	<legend>
